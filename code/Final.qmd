@@ -30,12 +30,17 @@ nests <- read_csv("nest_data_final.csv")
 
 ## a. Transparent statistical methods 
 
-In part 1, my co-worker used a logistic regression to evaluate whether distance to the water's edge predicted the probability of American Avocet microhabitat use.In part 2, my co-worker used a chi-square test of independence to evaluate whether habitat use differed among bird species.
+In part 1, my co-worker used a logistic regression to evaluate whether distance to the water's edge predicted the probability of American Avocet microhabitat use. In part 2, my co-worker used a chi-square test of independence to evaluate whether habitat use differed among bird species.
 
 ## b. Suggestions for rewriting 
 
+Part 1: American Avocets were more likely to use some areas than others based on their proximity to the water's edge, suggesting that distance from water may influence microhabitat selection. 
+
+Part 2: American Avocets, Forster's Terns, and Black-necked stilts used habitat types differently, indicating that each species may have distinct habitat preferences within the San Francisco Bay wetland system. 
+
 ## c. Further analysis 
 
+One additional variable that would be beneficial to measure and that could influence the probability of American Avocet microhabitat use is water depth, this could be measured in (cm) at each observation location using a depth gauge or meter stick. By collecting data on water depth you can determine if water depth may influence habitat use because American Avocets typically forage in shallow water, the deeper depths may be too challenging or too scarce on feeding opportunities. 
 
 # Problem 2. Data Analysis 
 
