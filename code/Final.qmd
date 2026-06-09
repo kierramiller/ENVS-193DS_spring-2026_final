@@ -124,6 +124,7 @@ The response variable is `case_control`. A value of 1 indicates that a bird nest
 Tree height is a continuous variable measured in centimeters. In Lujan et al. (2023), tree height is used as a key structural feature of acacia trees that may influence bird nest-site selection. In the Introduction (early paragraphs describing nest-site selection and habitat structure), the authors explain that birds choose nesting sites based on tree characteristics that affect predator avoidance and suitability for nesting. Taller trees may increase the probability of nest occurrence because they provide greater height above ground, improved visibility, and reduced accessibility to some predators. Tree height is operationalized in the Methods section under nest-site measurements, where tree structural traits, including height (cm), were recorded for each sampled tree.
 
 Ant species is a categorical variable with three levels: Crematogaster sjostedti, Crematogaster mimosae, and Crematogaster nigriceps. In the Introduction (sections describing ant–acacia mutualisms and ecological interactions with birds, typically mid-Introduction paragraphs), the authors explain that different ant species vary in their defensive behavior and intensity of protection provided to host trees. These differences can influence bird nesting decisions by altering the balance between protection from predators and potential disturbance from ants. More aggressive or effective defending ant species may increase the likelihood of nest occurrence by providing safer nesting environments. Ant species identity is defined in the Methods section, where trees were classified based on the resident ant species occupying each acacia tree during field sampling.
+
 ## d. Table of models 
 
 | Model Number | Response Variable | Predictors | Interaction? |
@@ -178,12 +179,8 @@ pred <- ggpredict(
   )
 )
 
-# View prediction object
-head(pred)
-
 # Create figure showing model predictions and observed data
 ggplot() +
-
   # Observed data
   geom_jitter(
     data = nests_clean,
@@ -196,7 +193,6 @@ ggplot() +
     alpha = 0.35,
     color = "gray40"
   ) +
-
   # Confidence interval
   geom_ribbon(
     data = pred,
@@ -208,7 +204,6 @@ ggplot() +
     fill = "lightblue",
     alpha = 0.3
   ) +
-
   # Prediction line
   geom_line(
     data = pred,
@@ -219,20 +214,26 @@ ggplot() +
     color = "darkblue",
     linewidth = 1.2
   ) +
-
-  # Separate panel for each ant species
-  facet_wrap(~group) +
-
+  # Separate panel for each ant species, with full scientific names
+  facet_wrap(
+    ~group,
+    labeller = labeller(
+      group = c(
+        "AB"  = "C. sjostedti",
+        "RRB" = "C. mimosae",
+        "BBR" = "C. nigriceps"
+      )
+    )
+  ) +
   labs(
     x = "Tree height (cm)",
     y = "Predicted probability of nest occurrence"
   ) +
-
   theme_classic() +
-
   theme(
     legend.position = "none"
   )
+
 ```
 
 
@@ -346,13 +347,7 @@ Individual points represent daily caffeine intake (ounces consumed), jittered to
 
 ## f. Write about your results
 
-The one-way ANOVA was used to test whether caffeine consumption differed across class locations. The results of the model did not indicate a strong difference in mean caffeine consumption among class locations (based on visual inspection and model output).
-
-Although some variation in caffeine intake was observed across locations, the differences in group means were relatively small compared to the within-group variation. This suggests that class location alone may not be a strong predictor of caffeine consumption in this dataset.
-
-Overall, caffeine consumption appears to vary more at the individual level than by class location, indicating that other factors such as time of day, workload, or number of classes may better explain differences in caffeine intake.
-
-
+Mean caffeine consumption did not differ significantly among class locations (one-way ANOVA: F(4, 21) = 1.67, p = 0.194). Although some variation in caffeine intake was observed across locations, the differences in group means were relatively small compared to within-group variation. This suggests that class location alone may not be a strong predictor of caffeine consumption, and that other factors such as time of day, workload, or number of classes may better explain differences in caffeine intake.
 
 
 
