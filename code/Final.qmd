@@ -7,7 +7,18 @@ format:
     toc: true
 ---
 
+```{r}
+#| include: false
+
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE
+)
+```
+
 GitHub Repository: <https://github.com/kierramiller/ENVS-193DS_spring-2026_final>
+
+
 
 
 
@@ -23,10 +34,10 @@ library(AICcmodavg)
 library(ggeffects)
 library(readr)
 
+nests <- read_csv("nest_data_final.csv")
+
 personal_data <- read_csv("datasheet.csv") %>%
   clean_names()
-
-glimpse(personal_data)
 
 personal_data <- personal_data %>%
   mutate(
@@ -110,10 +121,9 @@ The response variable is `case_control`. A value of 1 indicates that a bird nest
 
 ## c. Purpose of study 
 
-Tree height is a continuous predictor measured in centimeters. As tree height increases, the probability of nest occurrence may increase because taller trees can provide birds with improved visibility, greater protection from some predators, and more attractive nesting locations. This idea is discussed in the Introduction of Lujan et al. (2023), where the authors describe factors influencing nest-site selection and interactions between birds and ant-defended acacia trees.
+Tree height is a continuous variable measured in centimeters. In Lujan et al. (2023), tree height is used as a key structural feature of acacia trees that may influence bird nest-site selection. In the Introduction (early paragraphs describing nest-site selection and habitat structure), the authors explain that birds choose nesting sites based on tree characteristics that affect predator avoidance and suitability for nesting. Taller trees may increase the probability of nest occurrence because they provide greater height above ground, improved visibility, and reduced accessibility to some predators. Tree height is operationalized in the Methods section under nest-site measurements, where tree structural traits, including height (cm), were recorded for each sampled tree.
 
-Ant species is a categorical predictor with three levels: Crematogaster sjostedti, Crematogaster mimosae, and Crematogaster nigriceps. The probability of nest occurrence may differ among ant species because these ants vary in their defensive behaviors and interactions with birds, potentially making some trees safer or more attractive nesting locations than others. This information is discussed in the Introduction and Methods sections describing bird nesting behavior and ant–bird interactions.
-
+Ant species is a categorical variable with three levels: Crematogaster sjostedti, Crematogaster mimosae, and Crematogaster nigriceps. In the Introduction (sections describing ant–acacia mutualisms and ecological interactions with birds, typically mid-Introduction paragraphs), the authors explain that different ant species vary in their defensive behavior and intensity of protection provided to host trees. These differences can influence bird nesting decisions by altering the balance between protection from predators and potential disturbance from ants. More aggressive or effective defending ant species may increase the likelihood of nest occurrence by providing safer nesting environments. Ant species identity is defined in the Methods section, where trees were classified based on the resident ant species occupying each acacia tree during field sampling.
 ## d. Table of models 
 
 | Model Number | Response Variable | Predictors | Interaction? |
@@ -231,13 +241,24 @@ Figure 1. Predicted probability of bird nest occurrence as a function of tree he
 
 ## j. Calculate model predictions 
 ```{r}
-# Predict nest occurrence at 600 cm for each ant species
-predictions_600 <- data.frame(
-  ant_species = c(
-    "Crematogaster sjostedti",
-    "Crematogaster mimosae",
-    "Crematogaster nigriceps"
+## j. Calculate model predictions 
+
+# Predict at 600 cm first
+pred_600 <- predict(
+  m2,
+  newdata = data.frame(
+    height_cm = 600,
+    ant_species = factor(
+      c("AB", "RRB", "BBR"),
+      levels = levels(nests_clean$ant_species)
+    )
   ),
+  type = "response"
+)
+
+# Now build table AFTER prediction exists
+predictions_600 <- data.frame(
+  ant_species = c("AB", "RRB", "BBR"),
   predicted_probability = pred_600
 )
 
@@ -323,7 +344,6 @@ ggplot(personal_data, aes(x = class_location, y = ounces_consumed)) +
 Figure 2. Caffeine consumption across class locations.
 Individual points represent daily caffeine intake (ounces consumed), jittered to reduce overlap. Boxplots summarize the distribution within each class location group, including medians and interquartile ranges. Colors distinguish class locations, and variation in spread and central tendency suggests differences in caffeine consumption across academic environments.
 
-## f. Write about your results 
 ## f. Write about your results
 
 The one-way ANOVA was used to test whether caffeine consumption differed across class locations. The results of the model did not indicate a strong difference in mean caffeine consumption among class locations (based on visual inspection and model output).
