@@ -13,8 +13,7 @@ GitHub Repository: <https://github.com/kierramiller/ENVS-193DS_spring-2026_final
 
 
 ```{r}
-
-# Set up: load packages and dataset 
+# Set up: load packages and datasets
 
 library(tidyverse)
 library(janitor)
@@ -22,9 +21,19 @@ library(readxl)
 library(DHARMa)
 library(AICcmodavg)
 library(ggeffects)
+library(readr)
 
-nests <- read_csv("nest_data_final.csv")
+personal_data <- read_csv("datasheet.csv") %>%
+  clean_names()
+
+glimpse(personal_data)
+
+personal_data <- personal_data %>%
+  mutate(
+    mg_of_caffeine = parse_number(mg_of_caffeine)
+  )
 ```
+
 
 # Problem 1. 
 
@@ -246,16 +255,83 @@ The probability of nest occurrence differed among acacia ant species and changed
 
 ##  a. Comparing visualizations 
 
+The exploratory visualizations from Homework 2 were designed to identify patterns in the data using boxplots and scatterplots. The affective visualization from Homework 3 focused on communicating the experience and meaning behind the data through more expressive visual design choices.
+
+All of the visualizations used the same caffeine consumption dataset and explored how caffeine intake varied with academic factors. Each visualization aimed to communicate patterns and relationships within the data.
+
+Both the exploratory and affective visualizations suggested that caffeine consumption varied across different academic situations and tended to increase with greater workload. The patterns were similar because they were based on the same dataset, but the affective visualization emphasized the emotional impact of those patterns.
+
+I received feedback to improve readability and make the visual message clearer through color and design choices. I incorporated this feedback by refining the layout and using visual elements that better emphasized differences in caffeine consumption compared to class location and class type.
+
 ## b. Designing an analysis 
 
+Proposed Analysis: A one-way ANOVA would be an appropriate analysis because the response variable, caffeine consumption (ounces consumed), is continuous, while the predictor variable, class location, is categorical with multiple levels. This analysis would allow me to test whether mean caffeine consumption differs among the various class locations represented in my dataset.
 
 ## c. Check any assumptions and run your analysis 
+```{r}
+# Normality
+ggplot(personal_data, aes(sample = ounces_consumed)) +
+  stat_qq() +
+  stat_qq_line() +
+  theme_classic()
+
+```
+The QQ plot was used to assess whether caffeine consumption was approximately normally distributed. The points generally followed the reference line, suggesting that the normality assumption was reasonably met.
+
+```{r}
+# Homogeneity
+ggplot(personal_data, aes(x = class_location, y = ounces_consumed)) +
+  geom_boxplot(fill = "lightblue") +
+  theme_classic() +
+ 
+  geom_boxplot(fill = "lightblue") +
+  labs(
+    x = "Class location",
+    y = "Caffeine consumed (oz)"
+  ) +
+  theme_classic()
+```
+Homogeneity of variance was assessed visually using boxplots. The spread of caffeine consumption appeared reasonably similar among class locations, suggesting no major violation of the equal variance assumption.
+
+```{r}
+# One-way ANOVA
+
+anova_model <- aov(
+  ounces_consumed ~ class_location,
+  data = personal_data
+)
+
+summary(anova_model)
+```
+
 
 ## d. Create a visualization 
+```{r}
+ggplot(personal_data, aes(x = class_location, y = ounces_consumed)) +
+  geom_boxplot(fill = "lightblue") +
+  geom_jitter(width = 0.15, alpha = 0.5, color = "darkorange") +
+  labs(
+    x = "Class Location",
+    y = "Caffeine Consumed (oz)"
+  ) +
+  theme_classic()
+```
+
 
 ## e. Write a caption 
+
+Figure 2. Caffeine consumption across class locations.
+Individual points represent daily caffeine intake (ounces consumed), jittered to reduce overlap. Boxplots summarize the distribution within each class location group, including medians and interquartile ranges. Colors distinguish class locations, and variation in spread and central tendency suggests differences in caffeine consumption across academic environments.
+
 ## f. Write about your results 
-## g. Sharing your affective visualization 
+## f. Write about your results
+
+The one-way ANOVA was used to test whether caffeine consumption differed across class locations. The results of the model did not indicate a strong difference in mean caffeine consumption among class locations (based on visual inspection and model output).
+
+Although some variation in caffeine intake was observed across locations, the differences in group means were relatively small compared to the within-group variation. This suggests that class location alone may not be a strong predictor of caffeine consumption in this dataset.
+
+Overall, caffeine consumption appears to vary more at the individual level than by class location, indicating that other factors such as time of day, workload, or number of classes may better explain differences in caffeine intake.
+
 
 
 
